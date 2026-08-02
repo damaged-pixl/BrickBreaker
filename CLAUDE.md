@@ -68,6 +68,14 @@ The ~38 logical unit gap between lives text end (~`LW-58f`) and pause button sta
 - Unaffordable upgrade buttons are never added to `btnRects`, so they are not tappable.
 - `startNextLevel()` creates the next `GameState` from `shopNextLi` (0-indexed), carrying over score, lives, ballSpeed, and `fx` (active powerup durations).
 
+## Upgrade system (roguelite perks)
+
+`Screen.UPGRADE` appears after every non-shop level (i.e. whenever `nextLi % 10 != 0`). Three choices are drawn at random from `UPGRADE_POOL` and the player picks one — it's free, and picking advances via `startNextLevel()`. There is no "skip" button; a pick is mandatory.
+
+- Perks (`applyUpgrade`): `up_life` (+1 life), `up_wide` (paddle +16, cap +70), `up_multiball` (+1 starting ball per level, cap 4), `up_slow` (ballSpeed × 0.88), `up_fire` (start each level with ≥6 s fireball), `up_coins` (+25 coins).
+- Run-scoped state lives in `runPaddleBonus` / `runExtraBalls` / `runStartFire` — applied inside `startNextLevel()`, and reset by `resetRunUpgrades()` on `startGame()` / `continueGame()`. They persist across levels within a run but not across games (and are not saved to prefs).
+- Don't confuse these with the coin-shop upgrades above: shop = every 10th level, costs coins, one-shot effects; UPGRADE = every other level, free, run-scoped stacking effects.
+
 ## Aim system (pre-launch)
 
 Before the ball is launched, dragging moves `st.aimX` only — the paddle stays fixed. The aim line uses `aimX` to compute the launch angle. On tap-to-launch, `aimX` is used to set `ball.vx/vy`. Once launched, dragging moves the paddle as normal.

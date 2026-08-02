@@ -8,6 +8,7 @@ import android.media.AudioTrack
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -493,7 +494,13 @@ class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
     }
 
     // ── Vibrator ──────────────────────────────────────────────────────────────
-    private val vibrator = ctx.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+    private val vibrator: Vibrator? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (ctx.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            ctx.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        }
     private fun haptic(ms: Long) {
         if (!hapticOn) return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -638,8 +645,8 @@ class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
         val def = LEVELS[li]
         val list = mutableListOf<Brick>()
         def.grid.forEachIndexed { r, row ->
-            row.forEachIndexed { c, hp ->
-                if (hp == 0) return@forEachIndexed
+            row.forEachIndexed cell@{ c, hp ->
+                if (hp == 0) return@cell
                 val special = if (Math.random() < def.sc) PU_TYPES[(Math.random() * PU_TYPES.size).toInt()] else null
                 list += Brick(
                     x = BOX + c * (BW + BGAP), y = BOY + r * (BH + BGAP),
