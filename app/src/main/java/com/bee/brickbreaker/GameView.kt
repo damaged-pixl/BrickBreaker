@@ -575,7 +575,16 @@ class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
         thread?.join(2000); thread = null
     }
 
-    fun pause()  { gs?.paused = true; saveProgress() }
+    // Backgrounding: freeze the sim, show the PAUSE screen on return (so the ball
+    // never resumes mid-flight before the player is ready), and persist everything —
+    // savePrefs() also banks coins earned this session (they were only written on
+    // shop purchases / settings changes before, so backgrounding lost them).
+    fun pause() {
+        gs?.paused = true
+        if (screen == Screen.GAME) screen = Screen.PAUSE
+        savePrefs()
+        saveProgress()
+    }
     fun resume() { gs?.paused = false }
 
     // ── Game factory ───────────────────────────────────────────────────────

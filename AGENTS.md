@@ -28,7 +28,7 @@ Two-file engine, single activity:
 Key invariants inside `GameView.kt`:
 
 - **Logical coordinates** `LW=390f × LH=700f`, scaled to the real screen each frame via `canvas.scale(scaleX, scaleY)`; touch events are divided by the same scale.
-- **Screen state machine:** `Screen` enum (`MENU, GAME, PAUSE, GAMEOVER, WIN, SCORES, SETTINGS, SHOP`); `render()` dispatches to per-screen draw functions.
+- **Screen state machine:** `Screen` enum (`MENU, GAME, PAUSE, GAMEOVER, WIN, SCORES, SETTINGS, SHOP, UPGRADE`); `render()` dispatches to per-screen draw functions. `UPGRADE` is a free roguelite perk pick after every non-shop level.
 - **Audio:** `SoundEngine` generates PCM via `AudioTrack` (sine/square/saw/sweep/chord) — no audio assets.
 - **Persistence:** `SharedPreferences` key `"bb"` (theme, difficulty, toggles, volume, high scores) plus `"coins"` for shop currency.
 

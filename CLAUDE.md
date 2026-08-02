@@ -25,7 +25,7 @@ Single-activity, single-view native game. No Compose, no WebView, no fragments.
 
 **Coordinate system:** Logical space `LW=390f × LH=700f`. Scaled to real screen each frame via `canvas.scale(scaleX, scaleY)`. Touch events divided by scale to get logical coords.
 
-**Screen state machine:** `Screen` enum — `MENU, GAME, PAUSE, GAMEOVER, WIN, SCORES, SETTINGS`. The `render()` method dispatches to per-screen draw functions.
+**Screen state machine:** `Screen` enum — `MENU, GAME, PAUSE, GAMEOVER, WIN, SCORES, SETTINGS, SHOP, UPGRADE`. The `render()` method dispatches to per-screen draw functions.
 
 **Game loop:** `GameThread` inner class locks canvas at ~60fps, calls `update(dt)` then `render(canvas)`.
 
@@ -35,7 +35,7 @@ Single-activity, single-view native game. No Compose, no WebView, no fragments.
 
 **Levels:** 100 `LevelDef` entries in `LEVELS` list. Each has a special-brick spawn chance `sc` and a grid of HP values.
 
-**Themes:** 6 `Theme` entries in `THEMES` map — keys: `neon`, `pastel`, `mono`, `sunset`, `ocean`, `forest`.
+**Themes:** 6 `Theme` entries in `THEMES` map — keys: `neon`, `retro`, `ice`, `fire`, `mono`, `forest`.
 
 **Persistence:** `SharedPreferences` key `"bb"` — stores theme, difficulty, toggles (haptic/particles/trails/sfx), volume, high score list.
 
@@ -75,6 +75,10 @@ Before the ball is launched, dragging moves `st.aimX` only — the paddle stays 
 ## Navigation / Settings
 
 `prevScreen` tracks the screen before entering Settings, so "← BACK" returns to PAUSE or MENU correctly. `saveProgress()` now saves when `screen` is SETTINGS (as well as GAME/PAUSE), preventing data loss when the app is backgrounded from Settings.
+
+## Backgrounding (pause-on-background)
+
+`MainActivity.onPause` → `GameView.pause()` freezes the sim and, if a game is live, switches `screen` to `PAUSE` — so returning to the app lands on the pause menu instead of the ball resuming mid-flight. `pause()` also calls `savePrefs()`, which banks coins earned mid-run (previously coins were only written on shop purchases / settings changes / game-over, so backgrounding lost them).
 
 ## Multi-HP brick visuals
 
