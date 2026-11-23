@@ -59,7 +59,7 @@ Key invariants inside `GameView.kt`:
 
 The ~38 logical unit gap between lives text end (~`LW-58f`) and pause button start (~`LW-39f`) must be preserved. Do not move the pause button to the left side — users have muscle memory for top-right.
 
-## Fullscreen / display cutout (Android 15 / Pixel 9 Pro XL)
+## Fullscreen / display cutout (verified on Android 15 / Pixel 9 Pro XL — device since gone; current phone is the Edge 70 Fusion, Android 17)
 
 `MainActivity` uses `WindowInsetsController.hide(statusBars | navigationBars)` (API 30+) with `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`. Deprecated `SYSTEM_UI_FLAG_*` flags are kept as a fallback for API < 30 only. `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES` is set so the game renders behind the punch-hole camera area.
 
